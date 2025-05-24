@@ -74,7 +74,7 @@ You'll need a few things set up before you start:
 1. **Clone the repository:**
 
     ```bash
-    git clone <your-repo-url-here> # Replace with the actual URL of this repository
+    git clone https://github.com/OtoYuki/Notion-GoogleTasks-Sync.git
     cd notion_google_sync
     ```
 
@@ -156,6 +156,7 @@ The very first time you run the script, it will need to authenticate with Google
 ## 🏗️ Project Structure
 
 Here's a quick look at how the project is organized:
+
 notion_google_sync/
 ├── .env                  # Stores API keys and secrets (you create this)
 ├── .gitignore            # Specifies intentionally untracked files
@@ -163,12 +164,12 @@ notion_google_sync/
 ├── requirements.txt      # Project dependencies
 ├── main.py               # Main entry point for the application
 └── src/
-├── init.py
-├── config.py         # Loads and validates environment variables
-├── google_client.py  # Handles Google Tasks API interactions and OAuth
-├── models.py         # Defines the unified Task data model
-├── notion_client.py  # Handles Notion API interactions
-└── sync.py           # Contains the core synchronization logic
+    ├── __init__.py
+    ├── config.py         # Loads and validates environment variables
+    ├── google_client.py  # Handles Google Tasks API interactions and OAuth
+    ├── models.py         # Defines the unified Task data model
+    ├── notion_client.py  # Handles Notion API interactions
+    └── sync.py           # Contains the core synchronization logic
 
 ---
 
