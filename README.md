@@ -156,7 +156,7 @@ The very first time you run the script, it will need to authenticate with Google
 ## 🏗️ Project Structure
 
 Here's a quick look at how the project is organized:
-
+```
 notion_google_sync/
 ├── .env                  # Stores API keys and secrets (you create this)
 ├── .gitignore            # Specifies intentionally untracked files
@@ -170,7 +170,7 @@ notion_google_sync/
     ├── models.py         # Defines the unified Task data model
     ├── notion_client.py  # Handles Notion API interactions
     └── sync.py           # Contains the core synchronization logic
-
+```
 ---
 
 ## 💡 Future Ideas
