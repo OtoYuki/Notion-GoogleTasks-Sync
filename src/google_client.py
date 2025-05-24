@@ -29,7 +29,7 @@ class GoogleTaskClient:
         self.service = self._authenticate()
 
     def _authenticate(self) -> Any:
-        """Authenticate with Google and return a service object"""
+        """Authenticate with Google using device flow for headless environments"""
         creds = None
 
         # Create directory for token if it doesn't exist
@@ -46,29 +46,57 @@ class GoogleTaskClient:
                 # Refresh expired token
                 creds.refresh(Request())
             else:
-                # Create OAuth flow - using client secrets
-                flow = InstalledAppFlow.from_client_config(
-                    {
+                try:
+                    # Import required for device flow
+                    from google_auth_oauthlib.flow import InstalledAppFlow
+
+                    # Create client config for OAuth
+                    client_config = {
                         "installed": {
                             "client_id": CLIENT_ID,
                             "client_secret": CLIENT_SECRET,
                             "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                             "token_uri": "https://oauth2.googleapis.com/token",
                             "redirect_uris": [
-                                "http://localhost",
                                 "urn:ietf:wg:oauth:2.0:oob",
+                                "http://localhost",
                             ],
                         }
-                    },
-                    self.SCOPES,
-                )
+                    }
 
-                # Run the OAuth flow
-                creds = flow.run_local_server(port=0)
+                    # Use InstalledAppFlow with manual mode for headless systems
+                    flow = InstalledAppFlow.from_client_config(
+                        client_config, self.SCOPES
+                    )
 
-                # Save credentials for future use
-                with open(self.TOKEN_PATH, "wb") as token:
-                    pickle.dump(creds, token)
+                    # Run the flow with local server - this will handle the redirect properly
+                    print("\n===== Google Authentication =====")
+                    print("A browser window should open automatically.")
+                    print(
+                        "If it doesn't, please manually copy the URL below to any browser:"
+                    )
+                    creds = flow.run_local_server(port=8080)
+
+                    # Save credentials for future use
+                    with open(self.TOKEN_PATH, "wb") as token:
+                        pickle.dump(creds, token)
+
+                except Exception as e:
+                    print(f"\nError during authentication: {e}")
+                    print("\nFalling back to manual authentication...")
+
+                    # Manual authentication fallback
+                    print(
+                        "\n1. Visit the Google Cloud Console: https://console.cloud.google.com/apis/credentials"
+                    )
+                    print(
+                        "2. Create an OAuth Client ID if you haven't already (Application type: Desktop)"
+                    )
+                    print(
+                        "3. Download the JSON file and extract the client_id and client_secret"
+                    )
+                    print("4. Update your .env file with these values")
+                    raise
 
         # Build the service object
         service = build("tasks", "v1", credentials=creds)
